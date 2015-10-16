@@ -68,6 +68,8 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
     private static final String KEY_DATE_END = "date_end";
     private static final String KEY_CURRENT_VIEW = "current_view";
     private static final String KEY_LIST_POSITION_OFFSET = "list_position_offset";
+    private static final int DEFAULT_START_YEAR = 1900;
+    private static final int DEFAULT_END_YEAR = 2100;
 
     private static final CalendarDay DEFAULT_START_DATE = new CalendarDay(1900, Calendar.JANUARY, 1);
     private static final CalendarDay DEFAULT_END_DATE = new CalendarDay(2100, Calendar.DECEMBER, 31);
@@ -92,6 +94,9 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
     private TextView mYearView;
     private DayPickerView mDayPickerView;
     private YearPickerView mYearPickerView;
+    private int mMinYear = DEFAULT_START_YEAR;
+
+    private int mMaxYear = DEFAULT_END_YEAR;
 
     private int mCurrentView = UNINITIALIZED;
     private int mWeekStart = mCalendar.getFirstDayOfWeek();
@@ -373,7 +378,16 @@ public class CalendarDatePickerDialogFragment extends DialogFragment implements 
             mDayPickerView.onChange();
         }
     }
-
+    public void setYearRange(int startYear, int endYear) {
+        if (endYear <= startYear) {
+            throw new IllegalArgumentException("Year end must be larger than year start");
+        }
+        mMinYear = startYear;
+        mMaxYear = endYear;
+        if (mDayPickerView != null) {
+            mDayPickerView.onChange();
+        }
+    }
     /**
      * Sets the range of the dialog to be within the specific dates. Years and months outside of the
      * range are not shown, the days that are outside of the range are visible but cannot be selected.

@@ -91,11 +91,10 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     private static class RecurrenceModel implements Parcelable {
 
         // Should match EventRecurrence.DAILY, etc
-        static final int FREQ_HOURLY = 0;
-        static final int FREQ_DAILY = 1;
-        static final int FREQ_WEEKLY = 2;
-        static final int FREQ_MONTHLY = 3;
-        static final int FREQ_YEARLY = 4;
+        static final int FREQ_DAILY = 0;
+        static final int FREQ_WEEKLY = 1;
+        static final int FREQ_MONTHLY = 2;
+        static final int FREQ_YEARLY = 3;
 
         static final int END_NEVER = 0;
         static final int END_BY_DATE = 1;
@@ -112,11 +111,10 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         /**
          * FREQ: Repeat pattern
          *
-         * @see #FREQ_DAILY
-         * @see #FREQ_WEEKLY
-         * @see #FREQ_MONTHLY
-         * @see #FREQ_YEARLY
-         * @see FREQ_HOURLY
+         * @see FREQ_DAILY
+         * @see FREQ_WEEKLY
+         * @see FREQ_MONTHLY
+         * @see FREQ_YEARLY
          */
         int freq = FREQ_WEEKLY;
 
@@ -128,9 +126,11 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         /**
          * UNTIL and COUNT: How does the the event end?
          *
-         * @see #END_NEVER
-         * @see #END_BY_DATE
-         * @see #END_BY_COUNT
+         * @see END_NEVER
+         * @see END_BY_DATE
+         * @see END_BY_COUNT
+         * @see untilDate
+         * @see untilCount
          */
         int end;
 
@@ -150,28 +150,32 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         boolean[] weeklyByDayOfWeek = new boolean[7];
 
         /**
-         * BYDAY AND BYMONTHDAY: How to repeat monthly events? Same date of the month or Same nth day of week.
+         * BYDAY AND BYMONTHDAY: How to repeat monthly events? Same date of the
+         * month or Same nth day of week.
          *
-         * @see #MONTHLY_BY_DATE
-         * @see #MONTHLY_BY_NTH_DAY_OF_WEEK
+         * @see MONTHLY_BY_DATE
+         * @see MONTHLY_BY_NTH_DAY_OF_WEEK
          */
         int monthlyRepeat;
 
         /**
-         * Day of the month to repeat. Used when monthlyRepeat == MONTHLY_BY_DATE
+         * Day of the month to repeat. Used when monthlyRepeat ==
+         * MONTHLY_BY_DATE
          */
         int monthlyByMonthDay;
 
         /**
-         * Day of the week to repeat. Used when monthlyRepeat == MONTHLY_BY_NTH_DAY_OF_WEEK
+         * Day of the week to repeat. Used when monthlyRepeat ==
+         * MONTHLY_BY_NTH_DAY_OF_WEEK
          */
         int monthlyByDayOfWeek;
 
         /**
-         * Nth day of the week to repeat. Used when monthlyRepeat == MONTHLY_BY_NTH_DAY_OF_WEEK 0=undefined, -1=Last,
-         * 1=1st, 2=2nd, ..., 5=5th
-         * <p/>
-         * We support 5th, just to handle backwards capabilities with old bug, but it gets converted to -1 once edited.
+         * Nth day of the week to repeat. Used when monthlyRepeat ==
+         * MONTHLY_BY_NTH_DAY_OF_WEEK 0=undefined, -1=Last, 1=1st, 2=2nd, ..., 5=5th
+         *
+         * We support 5th, just to handle backwards capabilities with old bug, but it
+         * gets converted to -1 once edited.
          */
         int monthlyByNthDayOfWeek;
 
@@ -210,39 +214,11 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
             dest.writeInt(monthlyByMonthDay);
             dest.writeInt(monthlyByDayOfWeek);
             dest.writeInt(monthlyByNthDayOfWeek);
+            dest.writeInt(recurrenceState);
         }
-
-        private RecurrenceModel(Parcel in) {
-            this.recurrenceState = in.readInt();
-            this.freq = in.readInt();
-            this.interval = in.readInt();
-            this.end = in.readInt();
-            this.endDate = new Time();
-            endDate.year = in.readInt();
-            endDate.month = in.readInt();
-            endDate.monthDay = in.readInt();
-            this.endCount = in.readInt();
-            this.weeklyByDayOfWeek = in.createBooleanArray();
-            this.monthlyRepeat = in.readInt();
-            this.monthlyByMonthDay = in.readInt();
-            this.monthlyByDayOfWeek = in.readInt();
-            this.monthlyByNthDayOfWeek = in.readInt();
-        }
-
-        public static final Creator<RecurrenceModel> CREATOR = new Creator<RecurrenceModel>() {
-
-            public RecurrenceModel createFromParcel(Parcel source) {
-                return new RecurrenceModel(source);
-            }
-
-            public RecurrenceModel[] newArray(int size) {
-                return new RecurrenceModel[size];
-            }
-        };
     }
 
     class minMaxTextWatcher implements TextWatcher {
-
         private int mMin;
         private int mMax;
         private int mDefault;
@@ -282,9 +258,7 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
             onChange(value);
         }
 
-        /**
-         * Override to be called after each key stroke
-         */
+        /** Override to be called after each key stroke */
         void onChange(int value) {
         }
 
@@ -322,7 +296,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
 
     private Spinner mFreqSpinner;
     private static final int[] mFreqModelToEventRecurrence = {
-            EventRecurrence.HOURLY,
             EventRecurrence.DAILY,
             EventRecurrence.WEEKLY,
             EventRecurrence.MONTHLY,
@@ -358,17 +331,14 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     private String mEndDateLabel;
     private String mEndCountLabel;
 
-    /**
-     * Hold toggle buttons in the order per user's first day of week preference
-     */
+    /** Hold toggle buttons in the order per user's first day of week preference */
     private LinearLayout mWeekGroup;
     private LinearLayout mWeekGroup2;
     // Sun = 0
     private ToggleButton[] mWeekByDayButtons = new ToggleButton[7];
-    /**
-     * A double array of Strings to hold the 7x5 list of possible strings of the form: "on every [Nth] [DAY_OF_WEEK]",
-     * e.g. "on every second Monday", where [Nth] can be [first, second, third, fourth, last]
-     */
+    /** A double array of Strings to hold the 7x5 list of possible strings of the form:
+     *  "on every [Nth] [DAY_OF_WEEK]", e.g. "on every second Monday",
+     *  where [Nth] can be [first, second, third, fourth, last] */
     private String[][] mMonthRepeatByDayOfWeekStrs;
 
     private LinearLayout mMonthGroup;
@@ -392,7 +362,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
 
     static public boolean canHandleRecurrenceRule(EventRecurrence er) {
         switch (er.freq) {
-            case EventRecurrence.HOURLY:
             case EventRecurrence.DAILY:
             case EventRecurrence.MONTHLY:
             case EventRecurrence.YEARLY:
@@ -452,9 +421,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
                                                    RecurrenceModel model) {
         // Freq:
         switch (er.freq) {
-            case EventRecurrence.HOURLY:
-                model.freq = RecurrenceModel.FREQ_HOURLY;
-                break;
             case EventRecurrence.DAILY:
                 model.freq = RecurrenceModel.FREQ_DAILY;
                 break;
@@ -554,9 +520,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
 
     static private void copyModelToEventRecurrence(final RecurrenceModel model,
                                                    EventRecurrence er) {
-        if (model.recurrenceState == RecurrenceModel.STATE_NO_RECURRENCE) {
-            throw new IllegalStateException("There's no recurrence");
-        }
 
         // Freq
         er.freq = mFreqModelToEventRecurrence[model.freq];
@@ -700,6 +663,7 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         final Configuration config = activity.getResources().getConfiguration();
 
         mRepeatSwitch = (SwitchCompat) mView.findViewById(R.id.repeat_switch);
+        mRepeatSwitch.setVisibility(View.GONE);
         mRepeatSwitch.setChecked(mModel.recurrenceState == RecurrenceModel.STATE_RECURRENCE);
         mRepeatSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -732,11 +696,9 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         mIntervalPreText = (TextView) mView.findViewById(R.id.intervalPreText);
         mIntervalPostText = (TextView) mView.findViewById(R.id.intervalPostText);
 
-        mEndNeverStr = mResources.getString(R.string.recurrence_end_continously);
         mEndDateLabel = mResources.getString(R.string.recurrence_end_date_label);
         mEndCountLabel = mResources.getString(R.string.recurrence_end_count_label);
 
-        mEndSpinnerArray.add(mEndNeverStr);
         mEndSpinnerArray.add(mEndDateLabel);
         mEndSpinnerArray.add(mEndCountLabel);
         mEndSpinner = (Spinner) mView.findViewById(R.id.endSpinner);
@@ -764,7 +726,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         if (mModel.endDate == null) {
             mModel.endDate = new Time(mTime);
             switch (mModel.freq) {
-                case RecurrenceModel.FREQ_HOURLY:
                 case RecurrenceModel.FREQ_DAILY:
                 case RecurrenceModel.FREQ_WEEKLY:
                     mModel.endDate.month += 1;
@@ -903,22 +864,7 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     }
 
     private void togglePickerOptions() {
-        if (mModel.recurrenceState == RecurrenceModel.STATE_NO_RECURRENCE) {
-            mFreqSpinner.setEnabled(false);
-            mEndSpinner.setEnabled(false);
-            mIntervalPreText.setEnabled(false);
-            mInterval.setEnabled(false);
-            mIntervalPostText.setEnabled(false);
-            mMonthRepeatByRadioGroup.setEnabled(false);
-            mEndCount.setEnabled(false);
-            mPostEndCount.setEnabled(false);
-            mEndDateTextView.setEnabled(false);
-            mRepeatMonthlyByNthDayOfWeek.setEnabled(false);
-            mRepeatMonthlyByNthDayOfMonth.setEnabled(false);
-            for (Button button : mWeekByDayButtons) {
-                button.setEnabled(false);
-            }
-        } else {
+        {
             mView.findViewById(R.id.options).setEnabled(true);
             mFreqSpinner.setEnabled(true);
             mEndSpinner.setEnabled(true);
@@ -939,10 +885,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     }
 
     private void updateDoneButtonState() {
-        if (mModel.recurrenceState == RecurrenceModel.STATE_NO_RECURRENCE) {
-            mDoneButton.setEnabled(true);
-            return;
-        }
 
         if (mInterval.getText().toString().length() == 0) {
             mDoneButton.setEnabled(false);
@@ -993,9 +935,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         mMonthGroup.setVisibility(mModel.freq == RecurrenceModel.FREQ_MONTHLY ? View.VISIBLE : View.GONE);
 
         switch (mModel.freq) {
-            case RecurrenceModel.FREQ_HOURLY:
-                mIntervalResId = R.plurals.recurrence_interval_hourly;
-                break;
             case RecurrenceModel.FREQ_DAILY:
                 mIntervalResId = R.plurals.recurrence_interval_daily;
                 break;
@@ -1076,7 +1015,8 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
         Log.e(TAG, "Model = " + mModel.toString());
         String rrule;
         if (mModel.recurrenceState == RecurrenceModel.STATE_NO_RECURRENCE) {
-            rrule = "Not repeating";
+            copyModelToEventRecurrence(mModel, mRecurrence);
+            rrule = mRecurrence.toString();
         } else {
             copyModelToEventRecurrence(mModel, mRecurrence);
             rrule = mRecurrence.toString();
@@ -1109,8 +1049,8 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     }
 
     /**
-     * Update the "Repeat for N events" end option with the proper string values based on the value that has been
-     * entered for N.
+     * Update the "Repeat for N events" end option with the proper string values
+     * based on the value that has been entered for N.
      */
     private void updateEndCountText() {
         final String END_COUNT_MARKER = "%d";
@@ -1160,7 +1100,7 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
             mEndDateTextView.setVisibility(mModel.end == RecurrenceModel.END_BY_DATE ? View.VISIBLE
                     : View.GONE);
             mPostEndCount.setVisibility(
-                    mModel.end == RecurrenceModel.END_BY_COUNT && !mHidePostEndCount ?
+                    mModel.end == RecurrenceModel.END_BY_COUNT  && !mHidePostEndCount?
                             View.VISIBLE : View.GONE);
 
         }
@@ -1223,11 +1163,13 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
             mDatePickerDialog = CalendarDatePickerDialogFragment.newInstance(this, mModel.endDate.year,
                     mModel.endDate.month, mModel.endDate.monthDay);
             mDatePickerDialog.setFirstDayOfWeek(Utils.getFirstDayOfWeekAsCalendar(getActivity()));
+            mDatePickerDialog.setYearRange(Utils.YEAR_MIN, Utils.YEAR_MAX);
             mDatePickerDialog.show(getFragmentManager(), FRAG_TAG_DATE_PICKER);
         } else if (mDoneButton == v) {
             String rrule;
             if (mModel.recurrenceState == RecurrenceModel.STATE_NO_RECURRENCE) {
-                rrule = null;
+                copyModelToEventRecurrence(mModel, mRecurrence);
+                rrule = mRecurrence.toString();
             } else {
                 copyModelToEventRecurrence(mModel, mRecurrence);
                 rrule = mRecurrence.toString();
@@ -1257,7 +1199,6 @@ public class RecurrencePickerDialogFragment extends DialogFragment implements On
     }
 
     private class EndSpinnerAdapter extends ArrayAdapter<CharSequence> {
-
         final String END_DATE_MARKER = "%s";
         final String END_COUNT_MARKER = "%d";
 

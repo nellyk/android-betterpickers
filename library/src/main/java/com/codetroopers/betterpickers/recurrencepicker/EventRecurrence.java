@@ -297,7 +297,7 @@ public class EventRecurrence {
     }
 
     private static void appendNumbers(StringBuilder s, String label,
-            int count, int[] values) {
+                                      int count, int[] values) {
         if (count > 0) {
             s.append(label);
             count--;
@@ -694,7 +694,7 @@ public class EventRecurrence {
          * @return A new array with values, sized to hold the exact number of elements.
          */
         public static int[] parseNumberList(String listStr, int minVal, int maxVal,
-                boolean allowZero) {
+                                            boolean allowZero) {
             int[] values;
 
             if (listStr.indexOf(",") < 0) {
