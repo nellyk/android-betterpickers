@@ -16,6 +16,10 @@
 <img src="https://raw.githubusercontent.com/code-troopers/android-betterpickers/master/sample/imagery/screenshot_time.png" width="120">
 <img src="https://raw.githubusercontent.com/code-troopers/android-betterpickers/master/sample/imagery/screenshot_time_zone.png" width="120">
 
+<b>This is a screenshot of the Recurrence picker after the switch was removed</b>
+
+<img src="https://github.com/nellyk/android-betterpickers/blob/7f8f3d390201ee9ec9c9c748fc928e9cc24c10dc/sample/imagery/recurrence.png" width="200">
+
 DialogFragments modeled after the AOSP Clock and Calendar apps to improve UX for picking time, date, numbers, and other things.
 
 Try out the sample application on [Google Play][6].
